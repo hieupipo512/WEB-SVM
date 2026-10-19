@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SVM – Support Vector Machine</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="progress"></div>
+  <header class="hero">
+    <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+    <svg class="hero-art" viewBox="0 0 400 260" aria-hidden="true">
+      <line class="margin" x1="40" y1="230" x2="360" y2="30"/>
+      <line class="margin" x1="40" y1="190" x2="360" y2="-10"/>
+      <line class="boundary" x1="40" y1="210" x2="360" y2="10"/>
+      <circle class="dp" cx="90" cy="80" r="8"/><circle class="dp" cx="150" cy="120" r="8"/><circle class="dp sv" cx="190" cy="105" r="9"/><circle class="dp" cx="120" cy="40" r="8"/><circle class="dp" cx="230" cy="60" r="8"/>
+      <circle class="dn" cx="250" cy="220" r="8"/><circle class="dn" cx="310" cy="190" r="8"/><circle class="dn sv" cx="210" cy="190" r="9"/><circle class="dn" cx="330" cy="130" r="8"/><circle class="dn" cx="170" cy="235" r="8"/>
+    </svg>
+    <span class="badge">Machine Learning</span>
+    <h1>Support Vector <span class="grad">Machine</span></h1>
+    <p>Thuật toán học máy tìm siêu phẳng phân tách tốt nhất giữa các lớp dữ liệu.</p>
+    <a class="cta" href="#demo">Thử demo ngay ↓</a>
+  </header>
+  <nav class="topnav">
+    <a href="#gioi-thieu">Giới thiệu</a>
+    <a href="#demo">Demo</a>
+    <a href="#email">Phân loại email</a>
+    <a href="#du-lieu">Dữ liệu</a>
+    <a href="#uu-nhuoc">Ưu &amp; nhược điểm</a>
+  </nav>
+
+  <main>
+    <section id="gioi-thieu" class="card reveal">
+      <h2>📘 1. Giới thiệu</h2>
+      <p>SVM tìm một siêu phẳng sao cho khoảng cách (margin) từ siêu phẳng đến các điểm gần nhất của mỗi lớp là lớn nhất. Các điểm nằm trên biên margin được gọi là <b>support vectors</b>.</p>
+      <p class="formula">f(x) = wᵀx + b &nbsp;&nbsp;|&nbsp;&nbsp; margin = 2 / ‖w‖</p>
+      <p>Với dữ liệu không tách tuyến tính, SVM dùng <b>kernel trick</b> (RBF, polynomial…) và tham số <b>C</b> để cân bằng giữa margin lớn và lỗi phân loại.</p>
+    </section>
+
+    <section id="demo" class="card reveal">
+      <h2>🎯 2. Demo tương tác</h2>
+      <p class="hint">Click trái: thêm điểm lớp +1 (xanh). Click phải hoặc Shift + click: thêm điểm lớp −1 (đỏ).</p>
+      <div class="controls">
+        <label>Kernel
+          <select id="kernel">
+            <option value="linear">Linear</option>
+            <option value="rbf">RBF</option>
+          </select>
+        </label>
+        <label>C = <span id="cVal">1</span>
+          <input type="range" id="C" min="-2" max="2" step="0.1" value="0">
+        </label>
+        <label id="gammaWrap" hidden>gamma = <span id="gVal">2</span>
+          <input type="range" id="gamma" min="-1" max="1.5" step="0.1" value="0.3">
+        </label>
+        <button id="sample">Dữ liệu mẫu</button>
+        <button id="clear">Xóa hết</button>
+      </div>
+      <canvas id="canvas" width="700" height="450"></canvas>
+      <p id="info">Số điểm: 0 | Support vectors: 0</p>
+    </section>
+
+    <section id="email" class="card reveal">
+      <h2>✉️ 3. Phân loại email: thư rác và thư hợp lệ</h2>
+      <p>Mô hình dùng TF-IDF (unigram + bigram) kết hợp SVM kernel linear, giống pipeline trong notebook. Dữ liệu là 40 email tiếng Việt (20 thư rác, 20 thư hợp lệ), chia 70% huấn luyện và 30% kiểm tra, huấn luyện ngay trên trình duyệt.</p>
+      <div class="controls">
+        <label>C
+          <select id="mailC">
+            <option>0.1</option><option selected>1</option><option>10</option><option>100</option>
+          </select>
+        </label>
+        <button id="mailTrain">Huấn luyện lại</button>
+      </div>
+      <div id="mailResult"></div>
+      <h3>Thử với email mới</h3>
+      <textarea id="mailInput" rows="3" placeholder="Nhập nội dung email...">Bạn đã trúng thưởng, bấm vào link nhận quà ngay</textarea>
+      <button id="mailPredict">Kiểm tra</button>
+      <p id="mailOut"></p>
+    </section>
+
+    <section id="du-lieu" class="card reveal">
+      <h2>📊 4. Dữ liệu của bạn (CSV)</h2>
+      <p>Chọn file CSV xuất từ Colab (cột cuối là nhãn, các cột trước là đặc trưng số). Web sẽ lấy 2 đặc trưng đầu để vẽ và huấn luyện.</p>
+      <input type="file" id="csv" accept=".csv">
+      <div id="tableWrap"></div>
+    </section>
+
+    <section id="uu-nhuoc" class="card reveal two-col">
+      <div>
+        <h2>✅ Ưu điểm</h2>
+        <ul>
+          <li>Hiệu quả với dữ liệu nhiều chiều</li>
+          <li>Tốt khi số mẫu ít</li>
+          <li>Linh hoạt nhờ kernel</li>
+        </ul>
+      </div>
+      <div>
+        <h2>⚠️ Nhược điểm</h2>
+        <ul>
+          <li>Chậm với tập dữ liệu rất lớn</li>
+          <li>Nhạy với việc chọn kernel và tham số</li>
+          <li>Không cho xác suất trực tiếp</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer>© 2026 – Trang web về SVM · Làm bằng HTML, CSS, JavaScript</footer>
+  <script src="script.js"></script>
+</body>
+</html>
